@@ -98,14 +98,6 @@ class PostsUpdate(BaseModel):
     title: Optional[str]
     content: Optional[str]
 
-    @validator('title')
-    def convert_list(cls, stroke):
-        lst = stroke.split(",")
-        if len(lst) < 2:
-            raise ValueError('~ List of interests must be more than one ~')
-        perfect_stroke = ', '.join(lst)
-        return perfect_stroke
-
 
 class PostsBase(PostsIn):
     """ Модель (сущность), описывающая посты каждого пользователя """

@@ -8,6 +8,8 @@ from . import schemas
 import databases
 from .config import SQLALCHEMY_DATABASE_URL
 from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
+from templates import success_page, main_page
+from fastapi.responses import HTMLResponse
 
 
 # Класс для обработки ошибок по параметрам
@@ -33,7 +35,7 @@ async def add_process_time_header(request: Request, call_next):
     return response
 
 
-# Конфигурации роута /api/user
+# Конфигурации роута /api/user/...
 user_router = APIRouter(
     prefix="/api/user",
     tags=["user"],
@@ -114,8 +116,7 @@ async def update_cu_interests(update: schemas.InterestsUpdate,
     update = jsonable_encoder(update)
     interests = jsonable_encoder(interests)
     await crud.update_cu_interests(db=database, interest=interests, update=update)
-
-    return {"Success": "!"}
+    return success_page.success_letter(letter="Success!")
 
 
 # Вспомогательный функция-зависимость. Для текущего аунт. юзера возвращает информацию о нём согласно полям схемы User.
@@ -143,7 +144,7 @@ async def get_posts_of_user_use_name(name: str, cu: schemas.User = Depends(get_c
 async def delete_my_page(cu: schemas.User = Depends(get_current_user)):
     uid = int(jsonable_encoder(cu)["id"])
     await crud.delete_cu(db=database, user_id=uid)
-    return {"Success": "!"}
+    return success_page.success_letter(letter="Success!")
 
 
 # Функция получения всех постов текущего пользователя.
@@ -159,7 +160,7 @@ async def get_me_posts(current_user: schemas.User = Depends(get_current_user)):
 async def delete_my_posts(cu: schemas.User = Depends(get_current_user)):
     uid = int(jsonable_encoder(cu)["id"])
     await crud.delete_posts(db=database, user_id=uid)
-    return {"Success": "!"}
+    return success_page.success_letter(letter="Success!")
 
 
 # Пушим посты в базу данных для дальнейшего вывода их в ЛК пользователя.
@@ -319,3 +320,8 @@ async def shutdown():
 @app.get("/check")
 async def read_root():
     return {"Hello": "World"}
+
+
+@app.get("/main/")
+async def get_main_page():
+    return main_page.generate_html_response()

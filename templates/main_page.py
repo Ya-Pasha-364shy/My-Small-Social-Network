@@ -1,18 +1,15 @@
-main_sourse = """
-<html>
-<head>
-<meta charset="UTF-8">
-<title>Простая форма</title>
-</head>
-<body>
-<form action="action_form.php" method="POST">
-  <p>Моя первая форма:<br>
-    Имя: <input type="text" name="firstname" value=""><br>
-    Фамилия:  <input type="text" name="lastname" value=""><br>
-    Пароль: <input type="password" name="password" value=""><br>
-    <input type="submit">
-  </p>
-</form>
-</body>
-</html>
-"""
+from fastapi.responses import HTMLResponse
+
+
+def generate_html_response():
+    main_sourse = """
+        <html>
+            <head>
+                <title>Some HTML in here</title>
+            </head>
+            <body>
+                <h1>Look ma! HTML!</h1>
+            </body>
+        </html>
+    """
+    return HTMLResponse(content=main_sourse, status_code=200)
